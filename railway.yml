@@ -1,0 +1,13 @@
+# railway.yml
+services:
+  - name: frontend
+    type: static
+    buildCommand: ""
+    staticPath: "."
+    routes:
+      - src: /.*
+        dest: index.html
+  - name: backend
+    type: node
+    buildCommand: npm install
+    startCommand: npm start
