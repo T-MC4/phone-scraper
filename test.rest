@@ -1,0 +1,40 @@
+###
+@query = "I want some feel frees. They're like a kava root drink. I want them today so get them from a local store to avoid the delivery time."
+@number = 2
+
+###
+GET http://localhost:3000/search?query={{query}}&number={{number}}
+
+###
+GET http://localhost:3000/search?query=I want some feel frees. They're like a kava root drink. I want them today so get them from a local store to avoid the delivery time&number=2
+
+###
+GET https://phone-search-production.up.railway.app/search?query=I want some feel frees. They're like a kava root drink. I want them today so get them from a local store to avoid the delivery time&number=2
+
+###
+GET https://phone-search-production.up.railway.app/search
+Content-Type: application/json
+
+{
+    "query": "{{query}}",
+    "number": "{{number}}"
+}
+
+###
+GET http://localhost:3000/search/update
+Content-Type: application/json
+
+{
+    "query": "{{query}}",
+    "number": "{{number}}"
+}
+
+###
+POST http://localhost:3000/search
+Content-Type: application/json
+
+{
+    "query": "{{query}}",
+    "number": "{{number}}"
+}
+
