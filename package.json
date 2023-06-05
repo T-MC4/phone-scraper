@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "search": "node -r dotenv/config utils/metaphor.js",
-        "server": "node -r dotenv/config server.js",
+        "start": "node -r dotenv/config server.js",
         "places": "node -r dotenv/config utils/places.js"
     },
     "license": "ISC",
