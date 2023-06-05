@@ -1,43 +1,65 @@
-import express from "express";
-import getURLs from "./utils/metaphor.js";
-import cors from "cors";
-import { browseWebPage, findPhoneNumbersAndEmails } from "./utils/scraping.js";
+import express from 'express';
+import { performance } from 'perf_hooks';
+import { getURLs } from './utils/metaphor.js';
+import { reverseLookupOffEmails } from './utils/reverse-lookup.js';
+import {
+    browseWebPage,
+    findPhoneNumbersAndEmails,
+    removeDuplicates,
+} from './utils/scraping.js';
 
 // Initialize Express app
 const app = express();
 
 // Use CORS middleware to allow all origins
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: '*' }));
 
 // Define endpoint for GET /search (pass user request, get back phone numbers)
-app.get("/search", async (req, res) => {
-	const query = req.query.query;
+app.get('/search', async (req, res) => {
+    const start = performance.now();
 
-	if (!query) {
-		return res.status(400).json({ error: "Missing query parameter" });
-	}
+    const query = req.query.query;
+    console.log(query);
+    const number = req.query.number;
+    console.log(number);
 
-	const urls = await getURLs(query);
-	console.log(urls);
-	const data = [];
+    if (!query) {
+        return res.status(400).json({ error: 'Missing query parameter' });
+    }
 
-	for (let url of urls) {
-		const text = await browseWebPage(url);
-		const { phoneNumbers, emails } = findPhoneNumbersAndEmails(text);
-		console.log(phoneNumbers);
+    const arrayOfPromptResults = await getURLs(query, number);
+    const dataPromises = arrayOfPromptResults
+        .filter((result) => result !== undefined)
+        .map(async ({ urls, metaphorSearchPrompt }) => {
+            return Promise.all(
+                urls.map(async (url) => {
+                    const text = await browseWebPage(url);
+                    const { phoneNumbers, emails } =
+                        await findPhoneNumbersAndEmails(text);
+                    console.log('Phone Numbers: ', phoneNumbers);
 
-		data.push({
-			url: url,
-			text: text,
-			phoneNumbers: phoneNumbers,
-			emails: emails,
-		});
+                    const uniqueEmails = removeDuplicates(emails);
+                    // const reverseLookupNumbers =
+                    //     reverseLookupOffEmails(uniqueEmails);
 
-		console.log(data);
-	}
+                    return {
+                        metaphorPrompt: metaphorSearchPrompt,
+                        url: url,
+                        phoneNumbers: removeDuplicates(phoneNumbers),
+                        emails: uniqueEmails,
+                        // reverseLookupNumbers: reverseLookupNumbers,
+                    };
+                })
+            );
+        });
 
-	return res.json(data);
+    const data = await Promise.all(dataPromises).then((res) => res.flat());
+    console.log(data);
+
+    console.log(`\nSearch took ${performance.now() - start} milliseconds.`);
+
+    return res.json(data);
 });
 
 // Listen to port 3000
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+app.listen(3000, () => console.log('Server running on http://localhost:3000'));
