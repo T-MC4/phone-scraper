@@ -1,8 +1,8 @@
-const cheerio = require('cheerio');
-const { searchPhoneNumbersInText } = require('libphonenumber-js');
 // import puppeteer from 'puppeteer';
 // import * as puppeteer from 'puppeteer';
 // import chromium from 'chrome-aws-lambda';
+import cheerio from 'cheerio';
+import { searchPhoneNumbersInText } from 'libphonenumber-js';
 
 export async function browseWebPage(url) {
     let puppeteer;
@@ -10,8 +10,8 @@ export async function browseWebPage(url) {
 
     if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
         // running on the Vercel platform.
-        chrome = require('chrome-aws-lambda');
-        puppeteer = require('puppeteer-core');
+        const chrome = await import('chrome-aws-lambda');
+        puppeteer = await import('puppeteer-core');
         options = {
             args: [
                 ...chrome.args,
@@ -28,7 +28,7 @@ export async function browseWebPage(url) {
         };
     } else {
         // running locally.
-        puppeteer = require('puppeteer');
+        puppeteer = await import('puppeteer');
         options = { args: ['--no-sandbox'] };
     }
 

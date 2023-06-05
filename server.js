@@ -1,7 +1,8 @@
 import express from 'express';
+import cors from 'cors';
 import { performance } from 'perf_hooks';
 import { getURLs } from './utils/metaphor.js';
-import { reverseLookupOffEmails } from './utils/reverse-lookup.js';
+// import { reverseLookupOffEmails } from './utils/reverse-lookup.js';
 import {
     browseWebPage,
     findPhoneNumbersAndEmails,
@@ -28,6 +29,8 @@ app.get('/search', async (req, res) => {
     }
 
     const arrayOfPromptResults = await getURLs(query, number);
+
+    console.log(arrayOfPromptResults);
     const dataPromises = arrayOfPromptResults
         .filter((result) => result !== undefined)
         .map(async ({ urls, metaphorSearchPrompt }) => {

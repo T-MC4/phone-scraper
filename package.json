@@ -6,15 +6,19 @@
     "type": "module",
     "scripts": {
         "search": "node -r dotenv/config utils/metaphor.js",
-        "start": "node -r dotenv/config server.js",
+        "server": "node -r dotenv/config server.js",
         "places": "node -r dotenv/config utils/places.js"
     },
     "license": "ISC",
     "dependencies": {
         "cheerio": "1.0.0-rc.12",
         "chrome-aws-lambda": "^10.1.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.1.4",
+        "express": "^4.18.2",
         "langchain": "^0.0.90",
         "libphonenumber-js": "^1.10.33",
-        "puppeteer-core": "^10.1.0"
+        "puppeteer-core": "^10.1.0",
+        "zoominfo-api-auth-client": "^1.0.1"
     }
 }
