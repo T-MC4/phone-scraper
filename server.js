@@ -11,6 +11,7 @@ import {
 
 // Initialize Express app
 const app = express();
+const port = process.env.PORT || 3000;
 
 // Use CORS middleware to allow all origins
 app.use(cors({ origin: '*' }));
@@ -65,4 +66,4 @@ app.get('/search', async (req, res) => {
 });
 
 // Listen to port 3000
-app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+app.listen(port, () => console.log(`Server running on ${port}`));
